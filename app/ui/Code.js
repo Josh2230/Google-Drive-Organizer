@@ -8,14 +8,27 @@ function buildAddOn(e) {
     )
     .addWidget(
       CardService.newTextButton()
-        .setText('edited button')
+        .setText('list files')
+        .setOnClickAction(
+          CardService.newAction()
+            .setFunctionName("callFastAPI")
+        )
+  );
+
+  var section2 = CardService.newCardSection()
+    .addWidget(
+      CardService.newTextButton()
+        .setText('Organize by Date')
         .setOnClickAction(
           CardService.newAction()
             .setFunctionName("onButtonClick")
         )
-      );
+    );
 
       card.addSection(section);
+      card.addSection(section2);
+
+      // build convertes the card builder object into a real card that google can render
       return card.build();
 }
 
@@ -24,9 +37,56 @@ function onButtonClick(e) {
   var card = CardService.newCardBuilder();
 
   var section = CardService.newCardSection()
-    .addWidget(CardService.newTextParagraph().setText("You clicked the button! 🎉"))
+    .addWidget(CardService.newTextParagraph().setText("date function here"))
   
   card.addSection(section);
   return card.build();
 
+}
+
+// TODO FIX THIS SECTION
+function callFastAPI() {
+
+  // save the ngrok url
+  var url = "https://7f97f9362d52.ngrok-free.app/list-files";
+
+  // set options for the type of request and a header to bypass warning
+  var options = {
+    method: "GET",
+    headers: {
+      "ngrok-skip-browser-warning": "1"  
+    }
+  };
+
+  // fetch the response by sending the request to ngrok url
+  var response = UrlFetchApp.fetch(url, options);
+  Logger.log(response.getContentText());
+
+  //parse the JSON string from API to a javascript object
+  // we usually parse json for readability because json is ugly
+  var data = JSON.parse(response.getContentText());
+  var files = data.files;
+  
+  // convert javascript object to string for card format
+  // var message = data.message || JSON.stringify(data);
+
+  var message = files.map(data => `${data.name}, ${data.createdTime}`).join("\n");
+
+  // create a new card because cards are immutable once rendered so we can't update content
+  // inside an existing card directly
+  // To show new data, we must replace the old card with a new card object
+  var card = CardService.newCardBuilder()
+    .setHeader(CardService.newCardHeader().setTitle("API Response"))
+    .addSection(
+      CardService.newCardSection()
+        .addWidget(CardService.newTextParagraph().setText(message))
+    )
+    .build();
+
+    // newActionResponseBuilder is responding to some user action
+    // setNavigation tells google what to do with the sidebar view
+    // updateCard(card) replaces the current card with this new one
+    return CardService.newActionResponseBuilder()
+      .setNavigation(CardService.newNavigation().updateCard(card))
+      .build();
 }

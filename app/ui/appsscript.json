@@ -13,5 +13,9 @@
         "runFunction": "buildAddOn"
       }
     }
-  }
+  },
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/script.external_request",
+    "https://www.googleapis.com/auth/drive"
+  ]
 }
