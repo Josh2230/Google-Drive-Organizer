@@ -4,7 +4,8 @@ from google.oauth2.credentials import Credentials
 
 # Constants (could also move to utils/config.py later)
 SCOPES = ["https://www.googleapis.com/auth/drive.metadata.readonly"]
-CLIENT_SECRET_FILE = "/Users/joshualee/Google Drive Organizer/client_secret.json"
+CLIENT_SECRET_FILE = os.getenv("GOOGLE_CLIENT_SECRET", "client_secret.json")
+# CLIENT_SECRET_FILE = "/Users/joshualee/Google Drive Organizer/client_secret.json"
 REDIRECT_URI = "http://localhost:8000/oauth2callback"
 
 # Global creds (mimic DB for now with token.json)
