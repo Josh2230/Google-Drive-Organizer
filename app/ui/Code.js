@@ -1,30 +1,37 @@
 function buildAddOn(e) {
+  /*
+  Creates the entry point for rendering a google workspace add-on card
+  card is the empty scaffold and you add sections to it
+  */
 
   var card = CardService.newCardBuilder();
 
+  // This section creates the organize folder by date button
   var section = CardService.newCardSection()
     .addWidget(
       CardService.newTextParagraph().setText("Hello from your Drive Add-on!")
     )
     .addWidget(
       CardService.newTextButton()
-        .setText('list files')
+        .setText('Create Folders By Date')
         .setOnClickAction(
           CardService.newAction()
             .setFunctionName("callFastAPI")
         )
   );
 
+  // This section will create the undo button 
   var section2 = CardService.newCardSection()
     .addWidget(
       CardService.newTextButton()
-        .setText('Organize by Date')
+        .setText('Undo')
         .setOnClickAction(
           CardService.newAction()
             .setFunctionName("onButtonClick")
         )
     );
 
+      // add sections to the main card
       card.addSection(section);
       card.addSection(section2);
 
@@ -32,6 +39,9 @@ function buildAddOn(e) {
       return card.build();
 }
 
+/*
+Will contain the functionality to undo what the user just did
+*/
 function onButtonClick(e) {
   // This will run when the button is clicked
   var card = CardService.newCardBuilder();
@@ -44,11 +54,14 @@ function onButtonClick(e) {
 
 }
 
-// TODO FIX THIS SECTION
+/*
+callFastAPI calls the list-files endpoint (to be changed) so we can
+create link the backend to the button at the frontend
+*/
 function callFastAPI() {
 
   // save the ngrok url
-  var url = "https://7f97f9362d52.ngrok-free.app/list-files";
+  var url = "https://05e05e49a783.ngrok-free.app/list-files";
 
   // set options for the type of request and a header to bypass warning
   var options = {
@@ -60,7 +73,6 @@ function callFastAPI() {
 
   // fetch the response by sending the request to ngrok url
   var response = UrlFetchApp.fetch(url, options);
-  Logger.log(response.getContentText());
 
   //parse the JSON string from API to a javascript object
   // we usually parse json for readability because json is ugly
@@ -71,6 +83,7 @@ function callFastAPI() {
   // var message = data.message || JSON.stringify(data);
 
   var message = files.map(data => `${data.name}, ${data.createdTime}`).join("\n");
+  // var message = files.map(data => `${data.id}`).join("\n"); 
 
   // create a new card because cards are immutable once rendered so we can't update content
   // inside an existing card directly
