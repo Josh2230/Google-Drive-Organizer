@@ -18,9 +18,10 @@ A FastAPI backend application to organize Google Docs in Google Drive by their c
 ## Technologies Used
 
 - Python 3.11+
+- JavaScript / Google Apps Script for automation
 - FastAPI
 - Google Drive API (`google-api-python-client`)
 - Pydantic for data validation
 - AnyIO (used internally by FastAPI for async)
-
 ---
+
