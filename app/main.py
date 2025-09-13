@@ -29,8 +29,9 @@ def oauth2callback(code: str):
 @app.get("/list-files", response_model=FileListResponse)
 def list_files():
     """List Google Docs in Drive."""
-    # return docs_service.list_drive_files()
-    return docs_service.create_folders_by_date()
+    docs = docs_service.Docs()
+    docs.build_drive_service()
+    return docs.create_folders_by_date()
 
 ##TODO
 #app.get("/organize")
